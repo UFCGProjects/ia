@@ -1,6 +1,5 @@
 # Inteligencia Artificalpara 
 ## Wumpus Game
-==
 
 ### Grupo:
 - Bruno Miranda
