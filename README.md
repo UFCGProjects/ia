@@ -1,4 +1,5 @@
-# Inteligencia Artificalpara 
+# Inteligencia Artifical  
+
 ## Wumpus Game
 
 ### Grupo:
