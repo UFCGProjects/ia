@@ -1,8 +1,8 @@
-package main;
+package org.wumpusgame.main;
 
 import java.util.Scanner;
 
-import core.Wumpus;
+import org.wumpusgame.core.Wumpus;
 
 public class Main {
 

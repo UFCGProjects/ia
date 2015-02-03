@@ -1,10 +1,10 @@
-package core;
+package org.wumpusgame.core;
 
 import java.util.ArrayList;
 
-import models.Cell;
-import models.Hazard;
-import utils.Utils;
+import org.wumpusgame.models.Cell;
+import org.wumpusgame.models.Hazard;
+import org.wumpusgame.utils.Utils;
 
 public class Wumpus {
 
@@ -26,7 +26,7 @@ public class Wumpus {
 
         Cell cell = null;
 
-        // WUMPUS POSITION
+        // GENERATE WUMPUS POSITION
         cell = mMatrix[Utils.randInt(0, HEIGHT_SIZE - 1)][Utils.randInt(0, WIDTH_SIZE - 1)];
         cell.setHazard(Hazard.WUMPUS);
 
@@ -34,7 +34,7 @@ public class Wumpus {
             c.setSmellWumpus(true);
         }
 
-        // COLONY OF BATS POSITION
+        // GENERATE COLONY OF BATS POSITION
         do {
             cell = mMatrix[Utils.randInt(0, HEIGHT_SIZE - 1)][Utils.randInt(0, WIDTH_SIZE - 1)];
         } while (!cell.getHazard().equals(Hazard.NONE));
@@ -45,7 +45,7 @@ public class Wumpus {
             c.setHearFlapping(true);
         }
 
-        // BOTTOMLESS POSITION
+        // GENERATE BOTTOMLESS POSITION
         do {
             cell = mMatrix[Utils.randInt(0, HEIGHT_SIZE - 1)][Utils.randInt(0, WIDTH_SIZE - 1)];
         } while (!cell.getHazard().equals(Hazard.NONE));
@@ -56,7 +56,7 @@ public class Wumpus {
             c.setFeelBreeze(true);
         }
 
-        // START PLAYER POSITION
+        // GENERATE START PLAYER POSITION
         do {
             cell = mMatrix[Utils.randInt(0, HEIGHT_SIZE - 1)][Utils.randInt(0, WIDTH_SIZE - 1)];
         } while (!cell.getHazard().equals(Hazard.NONE));
@@ -71,45 +71,100 @@ public class Wumpus {
 
         // SIDES
 
-        if (cell.getPositionX() > 0) {
-            neighbors.add(mMatrix[cell.getPositionY()][cell.getPositionX() - 1]);
+        if (hasUpCell(cell)) {
+            neighbors.add(getUpCell(cell));
         }
 
-        if (cell.getPositionX() < WIDTH_SIZE - 1) {
-            neighbors.add(mMatrix[cell.getPositionY()][cell.getPositionX() + 1]);
+        if (hasDownCell(cell)) {
+            neighbors.add(getDownCell(cell));
         }
 
-        if (cell.getPositionY() > 0) {
-            neighbors.add(mMatrix[cell.getPositionY() - 1][cell.getPositionX()]);
+        if (hasLeftCell(cell)) {
+            neighbors.add(getLeftCell(cell));
         }
 
-        if (cell.getPositionY() < HEIGHT_SIZE - 1) {
-            neighbors.add(mMatrix[cell.getPositionY() + 1][cell.getPositionX()]);
+        if (hasRightCell(cell)) {
+            neighbors.add(getRightCell(cell));
         }
 
         // EDGES
 
-        if (cell.getPositionX() > 0 && cell.getPositionY() > 0) {
-            neighbors.add(mMatrix[cell.getPositionY() - 1][cell.getPositionX() - 1]);
-        }
-
-        if (cell.getPositionX() < WIDTH_SIZE - 1 && cell.getPositionY() > 0) {
-            neighbors.add(mMatrix[cell.getPositionY() - 1][cell.getPositionX() + 1]);
-        }
-
-        if (cell.getPositionX() > 0 && cell.getPositionY() < HEIGHT_SIZE - 1) {
-            neighbors.add(mMatrix[cell.getPositionY() + 1][cell.getPositionX() - 1]);
-        }
-
-        if (cell.getPositionX() < WIDTH_SIZE - 1 && cell.getPositionY() < HEIGHT_SIZE - 1) {
-            neighbors.add(mMatrix[cell.getPositionY() + 1][cell.getPositionX() + 1]);
-        }
+        // if (cell.getPositionX() > 0 && cell.getPositionY() > 0) {
+        // neighbors.add(mMatrix[cell.getPositionY() - 1][cell.getPositionX() -
+        // 1]);
+        // }
+        //
+        // if (cell.getPositionX() < WIDTH_SIZE - 1 && cell.getPositionY() > 0)
+        // {
+        // neighbors.add(mMatrix[cell.getPositionY() - 1][cell.getPositionX() +
+        // 1]);
+        // }
+        //
+        // if (cell.getPositionX() > 0 && cell.getPositionY() < HEIGHT_SIZE - 1)
+        // {
+        // neighbors.add(mMatrix[cell.getPositionY() + 1][cell.getPositionX() -
+        // 1]);
+        // }
+        //
+        // if (cell.getPositionX() < WIDTH_SIZE - 1 && cell.getPositionY() <
+        // HEIGHT_SIZE - 1) {
+        // neighbors.add(mMatrix[cell.getPositionY() + 1][cell.getPositionX() +
+        // 1]);
+        // }
 
         return neighbors;
     }
 
+    public Cell getUpCell(final Cell cell) {
+        if (hasUpCell(cell)) {
+            return mMatrix[cell.getPositionY() - 1][cell.getPositionX()];
+        }
+
+        return null;
+    }
+
+    public boolean hasUpCell(final Cell cell) {
+        return cell.getPositionY() > 0;
+    }
+
+    public Cell getDownCell(final Cell cell) {
+        if (hasDownCell(cell)) {
+            return mMatrix[cell.getPositionY() + 1][cell.getPositionX()];
+        }
+
+        return null;
+    }
+
+    public boolean hasDownCell(final Cell cell) {
+        return cell.getPositionY() < HEIGHT_SIZE - 1;
+    }
+
+    public Cell getLeftCell(final Cell cell) {
+        if (hasLeftCell(cell)) {
+            return mMatrix[cell.getPositionY()][cell.getPositionX() - 1];
+        }
+
+        return null;
+    }
+
+    public boolean hasLeftCell(final Cell cell) {
+        return cell.getPositionX() > 0;
+    }
+
+    public Cell getRightCell(final Cell cell) {
+        if (hasRightCell(cell)) {
+            return mMatrix[cell.getPositionY()][cell.getPositionX() + 1];
+        }
+
+        return null;
+    }
+
+    public boolean hasRightCell(final Cell cell) {
+        return cell.getPositionX() < WIDTH_SIZE - 1;
+    }
+
     public void moveUp() {
-        if (mCurrentCell.getPositionY() > 0) {
+        if (hasUpCell(mCurrentCell)) {
             mCurrentCell = mMatrix[mCurrentCell.getPositionY() - 1][mCurrentCell.getPositionX()];
             mCurrentCell.setVisited(true);
         }
@@ -118,7 +173,7 @@ public class Wumpus {
     }
 
     public void moveDown() {
-        if (mCurrentCell.getPositionY() < HEIGHT_SIZE - 1) {
+        if (hasDownCell(mCurrentCell)) {
             mCurrentCell = mMatrix[mCurrentCell.getPositionY() + 1][mCurrentCell.getPositionX()];
             mCurrentCell.setVisited(true);
         }
@@ -127,7 +182,7 @@ public class Wumpus {
     }
 
     public void moveLeft() {
-        if (mCurrentCell.getPositionX() > 0) {
+        if (hasLeftCell(mCurrentCell)) {
             mCurrentCell = mMatrix[mCurrentCell.getPositionY()][mCurrentCell.getPositionX() - 1];
             mCurrentCell.setVisited(true);
         }
@@ -136,7 +191,7 @@ public class Wumpus {
     }
 
     public void moveRight() {
-        if (mCurrentCell.getPositionX() < WIDTH_SIZE - 1) {
+        if (hasRightCell(mCurrentCell)) {
             mCurrentCell = mMatrix[mCurrentCell.getPositionY()][mCurrentCell.getPositionX() + 1];
             mCurrentCell.setVisited(true);
         }
@@ -183,6 +238,10 @@ public class Wumpus {
         out += "\n";
 
         return out;
+    }
+
+    public Cell getCurrentCell() {
+        return mCurrentCell;
     }
 
     public boolean isGameOver() {

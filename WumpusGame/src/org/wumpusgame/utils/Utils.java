@@ -1,4 +1,4 @@
-package utils;
+package org.wumpusgame.utils;
 
 import java.util.Random;
 

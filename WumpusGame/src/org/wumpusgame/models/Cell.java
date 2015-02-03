@@ -1,5 +1,4 @@
-package models;
-
+package org.wumpusgame.models;
 
 public class Cell {
 
@@ -125,6 +124,10 @@ public class Cell {
         } else {
             return "O";
         }
+    }
+
+    public String getId() {
+        return String.format("(%d,%d)", getPositionX(), getPositionY());
     }
 
 }
