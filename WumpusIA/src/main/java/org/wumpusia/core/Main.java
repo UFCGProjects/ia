@@ -1,8 +1,11 @@
 
 package org.wumpusia.core;
 
+import org.graphstream.algorithm.Dijkstra;
+import org.graphstream.graph.Edge;
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
+import org.graphstream.graph.Path;
 import org.graphstream.graph.implementations.MultiGraph;
 import org.graphstream.ui.swingViewer.Viewer;
 import org.wumpusgame.core.Wumpus;
@@ -10,9 +13,12 @@ import org.wumpusgame.models.Cell;
 import org.wumpusgame.models.Hazard;
 import org.wumpusia.utils.Utils;
 
+import java.util.Iterator;
 import java.util.Scanner;
 
 public class Main {
+
+    private static Node mCurrentNode;
 
     public static void main(final String args[]) {
         final Graph graph = new MultiGraph("Tutorial 1");
@@ -34,6 +40,12 @@ public class Main {
             }
 
             refreshNodesLabel(graph);
+
+            System.out.println(findNextMove(graph).getId());
+
+            //            System.out.println(String.format("up: %s - down: %s - left: %s - right: %s",
+            //                    mCurrentNode.getAttribute("up"), mCurrentNode.getAttribute("down"),
+            //                    mCurrentNode.getAttribute("left"), mCurrentNode.getAttribute("right")));
 
             System.out.println(wumpus.toString());
 
@@ -57,13 +69,13 @@ public class Main {
     }
 
     private static boolean refreshNodes(final Graph graph, final Wumpus wumpus) {
-        final Node currentNode = addNode(graph, wumpus.getCurrentCell());
+        mCurrentNode = addNode(graph, wumpus.getCurrentCell());
 
         addVizinhos(graph, wumpus);
 
-        final boolean isVisited = currentNode.getAttribute("visited");
+        final boolean isVisited = mCurrentNode.getAttribute("visited");
 
-        currentNode.setAttribute("visited", true);
+        mCurrentNode.setAttribute("visited", true);
 
         for (final Node n : graph) {
             if (n.getAttribute("visited")) {
@@ -73,7 +85,7 @@ public class Main {
             }
         }
 
-        currentNode.setAttribute("ui.class", "current");
+        mCurrentNode.setAttribute("ui.class", "current");
 
         return isVisited;
     }
@@ -99,6 +111,107 @@ public class Main {
                 && !wumpus.getCurrentCell().isHearFlapping()) {
             setVizinhosSafe(graph, wumpus);
         }
+    }
+
+    private static void refreshNodesLabel(final Graph graph) {
+        for (final Node n : graph) {
+            n.setAttribute("ui.label", n.getAttribute("id") + " : " + n.getAttribute("danger"));
+        }
+    }
+
+    private static void addVizinhos(final Graph graph, final Wumpus wumpus) {
+        final Cell currentCell = wumpus.getCurrentCell();
+        Node node = null;
+
+        if (wumpus.hasUpCell(currentCell)) {
+            node = addVizinho(graph, currentCell, wumpus.getUpCell(currentCell));
+            mCurrentNode.setAttribute(node.getId(), "up");
+            node.setAttribute(mCurrentNode.getId(), "down");
+        }
+
+        if (wumpus.hasDownCell(currentCell)) {
+            node = addVizinho(graph, currentCell, wumpus.getDownCell(currentCell));
+            mCurrentNode.setAttribute(node.getId(), "down");
+            node.setAttribute(mCurrentNode.getId(), "up");
+        }
+
+        if (wumpus.hasLeftCell(currentCell)) {
+            node = addVizinho(graph, currentCell, wumpus.getLeftCell(currentCell));
+            mCurrentNode.setAttribute(node.getId(), "left");
+            node.setAttribute(mCurrentNode.getId(), "right");
+        }
+
+        if (wumpus.hasRightCell(currentCell)) {
+            node = addVizinho(graph, currentCell, wumpus.getRightCell(currentCell));
+            mCurrentNode.setAttribute(node.getId(), "right");
+            node.setAttribute(mCurrentNode.getId(), "left");
+        }
+
+    }
+
+    private static Node addVizinho(final Graph graph, final Cell currentCell, final Cell otherCell) {
+        final Node node = addNode(graph, otherCell);
+
+        final Edge edge = graph.addEdge(currentCell.getId() + "-" + otherCell.getId(),
+                currentCell.getId(),
+                otherCell.getId());
+
+        return node;
+
+    }
+
+    public static Node addNode(final Graph graph, final Cell cell) {
+        Node node = graph.getNode(cell.getId());
+
+        if (node == null) {
+            node = graph.addNode(cell.getId());
+
+            node.setAttribute("id", cell.getId());
+            node.setAttribute("danger", 0);
+            node.setAttribute("visited", false);
+        }
+
+        return node;
+    }
+
+    private static Node findNextMove(final Graph graph) {
+        final Iterator<Node> breadthFirstIterator = mCurrentNode.getBreadthFirstIterator();
+
+        Node nodeResult = null;
+        Integer minDanger = Integer.MAX_VALUE;
+
+        while (breadthFirstIterator.hasNext()) {
+            final Node node = breadthFirstIterator.next();
+            final String nodeClass = node.getAttribute("ui.class");
+            final Integer nodeDanger = node.getAttribute("danger");
+
+            if (nodeClass.equals("unvisited") && nodeDanger < minDanger) {
+                nodeResult = node;
+                minDanger = nodeDanger;
+            }
+        }
+
+        final Dijkstra dijkstra = new Dijkstra(Dijkstra.Element.edge, null, "length");
+
+        dijkstra.init(graph);
+        dijkstra.setSource(mCurrentNode.getId());
+        dijkstra.compute();
+
+        final Path shortestPath = dijkstra.getShortestPath(nodeResult);
+
+        final Iterator<Node> nodeIterator = shortestPath.getNodeIterator();
+
+        Node prev = nodeIterator.next();
+
+        while (nodeIterator.hasNext()) {
+            final Node next = nodeIterator.next();
+            System.out.println(next.getAttribute(prev.getId()));
+            prev = next;
+        }
+
+        //        System.out.println(shortestPath);
+
+        return nodeResult;
     }
 
     private static void addVizinhosDanger(final Graph graph, final Wumpus wumpus, final int danger) {
@@ -132,33 +245,6 @@ public class Main {
         }
     }
 
-    private static void refreshNodesLabel(final Graph graph) {
-        for (final Node n : graph) {
-            n.setAttribute("ui.label", n.getAttribute("id") + " : " + n.getAttribute("danger"));
-        }
-    }
-
-    private static void addVizinhos(final Graph graph, final Wumpus wumpus) {
-        final Cell currentCell = wumpus.getCurrentCell();
-
-        if (wumpus.hasUpCell(currentCell)) {
-            addVizinho(graph, currentCell, wumpus.getUpCell(currentCell));
-        }
-
-        if (wumpus.hasDownCell(currentCell)) {
-            addVizinho(graph, currentCell, wumpus.getDownCell(currentCell));
-        }
-
-        if (wumpus.hasLeftCell(currentCell)) {
-            addVizinho(graph, currentCell, wumpus.getLeftCell(currentCell));
-        }
-
-        if (wumpus.hasRightCell(currentCell)) {
-            addVizinho(graph, currentCell, wumpus.getRightCell(currentCell));
-        }
-
-    }
-
     private static void setVizinhosSafe(final Graph graph, final Wumpus wumpus) {
         final Cell currentCell = wumpus.getCurrentCell();
 
@@ -169,13 +255,13 @@ public class Main {
 
         if (wumpus.hasDownCell(currentCell)) {
             graph.getNode(wumpus.getDownCell(currentCell).getId())
-                    .setAttribute("safe", true);
+            .setAttribute("safe", true);
             graph.getNode(wumpus.getDownCell(currentCell).getId()).setAttribute("danger", 0);
         }
 
         if (wumpus.hasLeftCell(currentCell)) {
             graph.getNode(wumpus.getLeftCell(currentCell).getId())
-                    .setAttribute("safe", true);
+            .setAttribute("safe", true);
             graph.getNode(wumpus.getLeftCell(currentCell).getId()).setAttribute("danger", 0);
         }
 
@@ -184,27 +270,6 @@ public class Main {
             graph.getNode(wumpus.getRightCell(currentCell).getId()).setAttribute("danger", 0);
         }
 
-    }
-
-    private static void addVizinho(final Graph graph, final Cell currentCell, final Cell otherCell) {
-        addNode(graph, otherCell);
-
-        graph.addEdge(currentCell.getId() + "-" + otherCell.getId(), currentCell.getId(),
-                otherCell.getId());
-    }
-
-    public static Node addNode(final Graph graph, final Cell cell) {
-        Node node = graph.getNode(cell.getId());
-
-        if (node == null) {
-            node = graph.addNode(cell.getId());
-
-            node.setAttribute("id", cell.getId());
-            node.setAttribute("danger", 0);
-            node.setAttribute("visited", false);
-        }
-
-        return node;
     }
 
 }
