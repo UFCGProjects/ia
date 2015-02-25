@@ -45,21 +45,23 @@ public class Main {
 
             System.out.println(nextMove);
 
-            //            execMove(wumpus, nextMove);
-
-            System.out.println(wumpus.toString());
-
             final String in = sc.nextLine();
 
-            if (in.equalsIgnoreCase("w")) {
-                wumpus.moveUp();
-            } else if (in.equalsIgnoreCase("s")) {
-                wumpus.moveDown();
-            } else if (in.equalsIgnoreCase("a")) {
-                wumpus.moveLeft();
-            } else if (in.equalsIgnoreCase("d")) {
-                wumpus.moveRight();
-            }
+            execMove(wumpus, nextMove);
+
+            //            System.out.println(wumpus.toString());
+            //
+            //            final String in = sc.nextLine();
+            //
+            //            if (in.equalsIgnoreCase("w")) {
+            //                wumpus.moveUp();
+            //            } else if (in.equalsIgnoreCase("s")) {
+            //                wumpus.moveDown();
+            //            } else if (in.equalsIgnoreCase("a")) {
+            //                wumpus.moveLeft();
+            //            } else if (in.equalsIgnoreCase("d")) {
+            //                wumpus.moveRight();
+            //            }
 
         }
 
@@ -69,8 +71,6 @@ public class Main {
     }
 
     private static void execMove(final Wumpus wumpus, final String nextMove) {
-        System.out.println("Moving to: " + nextMove);
-
         if (nextMove.equalsIgnoreCase("up")) {
             wumpus.moveUp();
         } else if (nextMove.equalsIgnoreCase("down")) {
@@ -79,12 +79,6 @@ public class Main {
             wumpus.moveLeft();
         } else if (nextMove.equalsIgnoreCase("right")) {
             wumpus.moveRight();
-        }
-
-        try {
-            Thread.sleep(2000);
-        } catch (final InterruptedException e) {
-            e.printStackTrace();
         }
     }
 
@@ -112,6 +106,7 @@ public class Main {
 
     private static void refreshDanger(final Graph graph, final Wumpus wumpus) {
         if (wumpus.getCurrentCell().getHazard().equals(Hazard.NONE)) {
+            graph.getNode(wumpus.getCurrentCell().getId()).setAttribute("safe", true);
             graph.getNode(wumpus.getCurrentCell().getId()).setAttribute("danger-flap", 0);
             graph.getNode(wumpus.getCurrentCell().getId()).setAttribute("danger-breeze", 0);
             graph.getNode(wumpus.getCurrentCell().getId()).setAttribute("danger-wumpus", 0);
