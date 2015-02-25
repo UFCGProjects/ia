@@ -41,26 +41,44 @@ public class Main {
 
             refreshNodesLabel(graph);
 
-            System.out.println(findNextMove(graph).getId());
+            final String nextMove = findNextMove(graph);
 
             //            System.out.println(String.format("up: %s - down: %s - left: %s - right: %s",
             //                    mCurrentNode.getAttribute("up"), mCurrentNode.getAttribute("down"),
             //                    mCurrentNode.getAttribute("left"), mCurrentNode.getAttribute("right")));
 
-            System.out.println(wumpus.toString());
+            //            System.out.println(wumpus.toString());
 
-            final String in = sc.nextLine();
+            //            final String in = sc.nextLine();
 
-            if (in.equalsIgnoreCase("w")) {
+            //            if (in.equalsIgnoreCase("w")) {
+            //                wumpus.moveUp();
+            //            } else if (in.equalsIgnoreCase("s")) {
+            //                wumpus.moveDown();
+            //            } else if (in.equalsIgnoreCase("a")) {
+            //                wumpus.moveLeft();
+            //            } else if (in.equalsIgnoreCase("d")) {
+            //                wumpus.moveRight();
+            //            }
+
+            System.out.println("Moving to: " + nextMove);
+
+            if (nextMove.equalsIgnoreCase("up")) {
                 wumpus.moveUp();
-            } else if (in.equalsIgnoreCase("s")) {
+            } else if (nextMove.equalsIgnoreCase("down")) {
                 wumpus.moveDown();
-            } else if (in.equalsIgnoreCase("a")) {
+            } else if (nextMove.equalsIgnoreCase("left")) {
                 wumpus.moveLeft();
-            } else if (in.equalsIgnoreCase("d")) {
+            } else if (nextMove.equalsIgnoreCase("right")) {
                 wumpus.moveRight();
             }
 
+            try {
+                Thread.sleep(2000);
+            } catch (final InterruptedException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
         }
 
         sc.nextLine();
@@ -174,7 +192,7 @@ public class Main {
         return node;
     }
 
-    private static Node findNextMove(final Graph graph) {
+    private static String findNextMove(final Graph graph) {
         final Iterator<Node> breadthFirstIterator = mCurrentNode.getBreadthFirstIterator();
 
         Node nodeResult = null;
@@ -202,16 +220,14 @@ public class Main {
         final Iterator<Node> nodeIterator = shortestPath.getNodeIterator();
 
         Node prev = nodeIterator.next();
-
+        String move = "";
         while (nodeIterator.hasNext()) {
             final Node next = nodeIterator.next();
-            System.out.println(next.getAttribute(prev.getId()));
+            move = next.getAttribute(prev.getId());
             prev = next;
         }
 
-        //        System.out.println(shortestPath);
-
-        return nodeResult;
+        return move;
     }
 
     private static void addVizinhosDanger(final Graph graph, final Wumpus wumpus, final int danger) {
@@ -255,13 +271,13 @@ public class Main {
 
         if (wumpus.hasDownCell(currentCell)) {
             graph.getNode(wumpus.getDownCell(currentCell).getId())
-            .setAttribute("safe", true);
+                    .setAttribute("safe", true);
             graph.getNode(wumpus.getDownCell(currentCell).getId()).setAttribute("danger", 0);
         }
 
         if (wumpus.hasLeftCell(currentCell)) {
             graph.getNode(wumpus.getLeftCell(currentCell).getId())
-            .setAttribute("safe", true);
+                    .setAttribute("safe", true);
             graph.getNode(wumpus.getLeftCell(currentCell).getId()).setAttribute("danger", 0);
         }
 
