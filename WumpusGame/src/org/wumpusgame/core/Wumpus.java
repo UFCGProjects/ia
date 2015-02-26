@@ -10,6 +10,7 @@ public class Wumpus {
 
     private final int HEIGHT_SIZE = 5;
     private final int WIDTH_SIZE = 5;
+    private int mArrow = 1;
 
     Cell[][] mMatrix;
     Cell mCurrentCell;
@@ -245,6 +246,11 @@ public class Wumpus {
     }
 
     public boolean isGameOver() {
+
+        if (!hasArrow()) {
+            return true;
+        }
+
         switch (mCurrentCell.getHazard()) {
         case BOTTOMLESS:
             System.out.println(toString());
@@ -260,4 +266,32 @@ public class Wumpus {
 
     }
 
+    private boolean hasArrow() {
+        return mArrow > 0 ? true : false;
+    }
+
+    public void attackUp() {
+        attack(getUpCell(getCurrentCell()));
+    }
+
+    public void attackDown() {
+        attack(getDownCell(getCurrentCell()));
+    }
+
+    public void attackLeft() {
+        attack(getLeftCell(getCurrentCell()));
+    }
+
+    public void attackRight() {
+        attack(getRightCell(getCurrentCell()));
+    }
+
+    public void attack(final Cell cell) {
+        mArrow--;
+
+        if (cell != null && cell.getHazard().equals(Hazard.WUMPUS)) {
+            System.out.println("You killed the wumpus!\nYou WIN!\n");
+        }
+
+    }
 }
