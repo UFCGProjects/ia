@@ -291,6 +291,9 @@ public class Wumpus {
 
         if (cell != null && cell.getHazard().equals(Hazard.WUMPUS)) {
             System.out.println("You killed the wumpus!\nYou WIN!\n");
+        } else if (!hasArrow()) {
+            System.out.println("You dont have more arrows!\nGAME OVER!");
+            System.out.println("You missed!");
         }
 
     }

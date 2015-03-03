@@ -41,7 +41,15 @@ public class Main {
 
             refreshNodesLabel(graph);
 
-            final String nextMove = findNextMove(graph);
+            String nextMove = findNextMoveToSafeNode(graph);
+
+            if (nextMove == null) {
+                nextMove = findNextMoveToWumpusNode(graph);
+            }
+
+            if (nextMove == null) {
+                nextMove = findNextMoveToLessDangerousNode(graph);
+            }
 
             System.out.println(nextMove);
 
@@ -49,20 +57,7 @@ public class Main {
 
             execMove(wumpus, nextMove);
 
-            //            System.out.println(wumpus.toString());
-            //
-            //            final String in = sc.nextLine();
-            //
-            //            if (in.equalsIgnoreCase("w")) {
-            //                wumpus.moveUp();
-            //            } else if (in.equalsIgnoreCase("s")) {
-            //                wumpus.moveDown();
-            //            } else if (in.equalsIgnoreCase("a")) {
-            //                wumpus.moveLeft();
-            //            } else if (in.equalsIgnoreCase("d")) {
-            //                wumpus.moveRight();
-            //            }
-
+            System.out.println(wumpus.toString());
         }
 
         sc.nextLine();
@@ -79,6 +74,14 @@ public class Main {
             wumpus.moveLeft();
         } else if (nextMove.equalsIgnoreCase("right")) {
             wumpus.moveRight();
+        } else if (nextMove.equalsIgnoreCase("aw")) {
+            wumpus.attackUp();
+        } else if (nextMove.equalsIgnoreCase("as")) {
+            wumpus.attackDown();
+        } else if (nextMove.equalsIgnoreCase("aa")) {
+            wumpus.attackLeft();
+        } else if (nextMove.equalsIgnoreCase("ad")) {
+            wumpus.attackRight();
         }
     }
 
@@ -197,7 +200,31 @@ public class Main {
         return node;
     }
 
-    private static String findNextMove(final Graph graph) {
+    private static String findNextMoveToSafeNode(final Graph graph) {
+        final Iterator<Node> breadthFirstIterator = mCurrentNode.getBreadthFirstIterator();
+
+        Node nodeResult = null;
+
+        while (breadthFirstIterator.hasNext()) {
+            final Node node = breadthFirstIterator.next();
+            final String nodeClass = node.getAttribute("ui.class");
+
+            final Integer dangerBreeze = node.getAttribute("danger-breeze");
+            final Integer dangerFlap = node.getAttribute("danger-flap");
+            final Integer dangerWumpus = node.getAttribute("danger-wumpus");
+
+            // Se houver algum nó não visitado com perigo igual a zero: visita ele.
+            if (nodeClass.equals("unvisited")
+                    && dangerBreeze + dangerFlap + dangerWumpus == 0) {
+                nodeResult = node;
+                return findMove(graph, nodeResult);
+            }
+        }
+
+        return null;
+    }
+
+    private static String findNextMoveToLessDangerousNode(final Graph graph) {
         final Iterator<Node> breadthFirstIterator = mCurrentNode.getBreadthFirstIterator();
 
         Node nodeResult = null;
@@ -211,11 +238,20 @@ public class Main {
             final Integer dangerFlap = node.getAttribute("danger-flap");
             final Integer dangerWumpus = node.getAttribute("danger-wumpus");
 
+            // Se houver algum nó não visitado com perigo igual a zero: visita ele.
             if (nodeClass.equals("unvisited")
                     && dangerBreeze + dangerFlap + dangerWumpus < minDanger) {
                 nodeResult = node;
                 minDanger = dangerBreeze + dangerFlap + dangerWumpus;
             }
+        }
+
+        return findMove(graph, nodeResult);
+    }
+
+    private static String findMove(final Graph graph, final Node toNode) {
+        if (toNode == null) {
+            return null;
         }
 
         final Dijkstra dijkstra = new Dijkstra(Dijkstra.Element.edge, null, "length");
@@ -224,16 +260,81 @@ public class Main {
         dijkstra.setSource(mCurrentNode.getId());
         dijkstra.compute();
 
-        final Path shortestPath = dijkstra.getShortestPath(nodeResult);
+        final Path shortestPath = dijkstra.getShortestPath(toNode);
 
         final Iterator<Node> nodeIterator = shortestPath.getNodeIterator();
 
         Node prev = nodeIterator.next();
         String move = "";
+
         while (nodeIterator.hasNext()) {
             final Node next = nodeIterator.next();
             move = next.getAttribute(prev.getId());
             prev = next;
+        }
+
+        return move;
+    }
+
+    private static String findNextMoveToWumpusNode(final Graph graph) {
+        final Iterator<Node> breadthFirstIterator = mCurrentNode.getBreadthFirstIterator();
+
+        Node resultNode = null;
+        Integer maxDanger = 0;
+
+        while (breadthFirstIterator.hasNext()) {
+            final Node node = breadthFirstIterator.next();
+            final String nodeClass = node.getAttribute("ui.class");
+
+            final Integer dangerWumpus = node.getAttribute("danger-wumpus");
+
+            // Se houver algum nó não visitado com perigo igual a zero: visita ele.
+            if (nodeClass.equals("unvisited") && dangerWumpus > maxDanger) {
+                resultNode = node;
+                maxDanger = dangerWumpus;
+            }
+        }
+
+        if (resultNode == null) {
+            return null;
+        }
+
+        final Dijkstra dijkstra = new Dijkstra(Dijkstra.Element.edge, null, "length");
+
+        dijkstra.init(graph);
+        dijkstra.setSource(mCurrentNode.getId());
+        dijkstra.compute();
+
+        final Path shortestPath = dijkstra.getShortestPath(resultNode);
+
+        final Iterator<Node> nodeIterator = shortestPath.getNodeIterator();
+
+        Node prev = nodeIterator.next();
+        String move = "";
+
+        Node next = null;
+
+        while (nodeIterator.hasNext()) {
+            next = nodeIterator.next();
+
+            move = next.getAttribute(prev.getId());
+            prev = next;
+        }
+
+        //                System.out.println(next.getAttribute(node.getId()));
+
+        final String attackMove = next.getAttribute(resultNode.getId());
+
+        if (attackMove != null) {
+            if (attackMove.equalsIgnoreCase("up")) {
+                move = "aw";
+            } else if (attackMove.equalsIgnoreCase("down")) {
+                move = "as";
+            } else if (attackMove.equalsIgnoreCase("left")) {
+                move = "aa";
+            } else if (attackMove.equalsIgnoreCase("right")) {
+                move = "ad";
+            }
         }
 
         return move;
