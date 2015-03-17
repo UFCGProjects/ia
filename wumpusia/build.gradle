@@ -1,0 +1,13 @@
+dependencies {
+    compile 'org.graphstream:gs-core:1.2'
+    compile 'org.graphstream:gs-algo:1.0'
+    compile project(':wumpusgame')
+}
+
+jar {
+    manifest {
+        attributes 'Implementation-Title': 'Wumpus IA', 'Implementation-Version': version,  'Main-Class': 'br.edu.ufcg.wumpusgia.main.Main'
+    }
+}
+
+mainClassName = 'br.edu.ufcg.wumpusia.main.Main'

@@ -1,0 +1,7 @@
+jar {
+    manifest {
+        attributes 'Implementation-Title': 'Wumpus Game', 'Implementation-Version': version,  'Main-Class': 'br.edu.ufcg.wumpusgame.main.Main'
+    }
+}
+
+mainClassName = 'br.edu.ufcg.wumpusgame.main.Main'
