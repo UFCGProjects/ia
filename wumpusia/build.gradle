@@ -6,7 +6,7 @@ dependencies {
 
 jar {
     manifest {
-        attributes 'Implementation-Title': 'Wumpus IA', 'Implementation-Version': version,  'Main-Class': 'br.edu.ufcg.wumpusgia.main.Main'
+        attributes 'Implementation-Title': 'Wumpus IA', 'Implementation-Version': version,  'Main-Class': 'br.edu.ufcg.wumpusia.main.Main'
     }
 }
 
