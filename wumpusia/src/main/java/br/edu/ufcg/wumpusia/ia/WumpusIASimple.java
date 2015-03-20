@@ -9,6 +9,15 @@ import java.util.Iterator;
 
 public class WumpusIASimple extends WumpusIA {
 
+    public WumpusIASimple(Long seed) {
+        super(seed);
+    }
+
+    public WumpusIASimple() {
+        super();
+    }
+
+
     @Override
     String heuristicaToFindMove() {
         String nextMove = findNextMoveToSafeNode();

@@ -12,6 +12,7 @@ import org.graphstream.graph.Path;
 import org.graphstream.graph.implementations.MultiGraph;
 import org.graphstream.ui.swingViewer.Viewer;
 
+import java.io.IOException;
 import java.util.Iterator;
 import java.util.Scanner;
 
@@ -22,19 +23,23 @@ public abstract class WumpusIA {
     private Wumpus mWumpus;
 
     public WumpusIA() {
+        this(System.currentTimeMillis());
+    }
+
+    public WumpusIA(Long seed) {
         mGraph = new MultiGraph("Wumpus IA");
 
         getGraph().setAutoCreate(true);
         getGraph().setStrict(false);
         getGraph().addAttribute("ui.stylesheet", Utils.styleSheet);
 
-        mWumpus = new Wumpus();
+        mWumpus = new Wumpus(seed);
     }
 
-    public void run() {
+    public void run() throws IOException {
         final Scanner sc = new Scanner(System.in);
 
-        final Viewer display = getGraph().display();
+//        final Viewer display = getGraph().display();
 
         int movesCount = 0;
         while (!getWumpus().isGameOver()) {
@@ -47,19 +52,27 @@ public abstract class WumpusIA {
 
             String nextMove = heuristicaToFindMove();
 
-            System.out.println(nextMove);
+            // DEBUG:
+            //     Imprimi o proximo movimento da IA
+//            System.out.println(nextMove);
 
-            sc.nextLine();
+            // DEBUG:
+            //     Segura os movimentos da IA
+//            sc.nextLine();
 
             execMove(nextMove);
             movesCount++;
-            System.out.println(getWumpus().toString());
+
+            // DEBUG:
+            //     Mostra o tabuleiro do WUMPUS no console.
+            //System.out.println(getWumpus().toString());
         }
 
         System.out.println(movesCount + "");
         System.out.println(getWumpus().getWin() + "");
+        Utils.addResultado("simples", movesCount, getWumpus().getWin());
         sc.nextLine();
-        display.close();
+//        display.close();
 
     }
 

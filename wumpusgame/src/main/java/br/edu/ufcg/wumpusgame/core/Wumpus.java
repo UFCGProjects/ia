@@ -17,6 +17,12 @@ public class Wumpus {
     Cell mCurrentCell;
 
     public Wumpus() {
+        this(System.currentTimeMillis());
+    }
+
+    public Wumpus(Long seed) {
+        Utils.configureRandomSeed(seed);
+
         mWin = false;
         mMatrix = new Cell[HEIGHT_SIZE][WIDTH_SIZE];
 
@@ -26,7 +32,7 @@ public class Wumpus {
             }
         }
 
-        Cell cell = null;
+        Cell cell;
 
         // GENERATE WUMPUS POSITION
         cell = mMatrix[Utils.randInt(0, HEIGHT_SIZE - 1)][Utils.randInt(0, WIDTH_SIZE - 1)];
