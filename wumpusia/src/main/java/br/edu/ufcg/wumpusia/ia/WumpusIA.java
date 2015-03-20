@@ -21,6 +21,7 @@ public abstract class WumpusIA {
     private Node mCurrentNode;
     private Graph mGraph;
     private Wumpus mWumpus;
+    protected Integer danger;
 
     public WumpusIA() {
         this(System.currentTimeMillis());
@@ -34,6 +35,11 @@ public abstract class WumpusIA {
         getGraph().addAttribute("ui.stylesheet", Utils.styleSheet);
 
         mWumpus = new Wumpus(seed);
+        danger = 25;
+    }
+
+    public void setDanger(Integer danger) {
+        this.danger = danger;
     }
 
     public void run() throws IOException {
@@ -131,15 +137,15 @@ public abstract class WumpusIA {
         }
 
         if (getWumpus().getCurrentCell().isFeelBreeze()) {
-            addVizinhosDanger("breeze", 25);
+            addVizinhosDanger("breeze", danger);
         }
 
         if (getWumpus().getCurrentCell().isHearFlapping()) {
-            addVizinhosDanger("flap", 25);
+            addVizinhosDanger("flap", danger);
         }
 
         if (getWumpus().getCurrentCell().isSmellWumpus()) {
-            addVizinhosDanger("wumpus", 25);
+            addVizinhosDanger("wumpus", danger);
         }
 
         if (!getWumpus().getCurrentCell().isFeelBreeze() && !getWumpus().getCurrentCell().isHearFlapping() && !getWumpus().getCurrentCell().isSmellWumpus()) {

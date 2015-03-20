@@ -13,6 +13,7 @@ public class WumpusIAOptimized extends WumpusIA{
     
      public WumpusIAOptimized (Long seed) {
          super(seed);
+
      }
 
     public WumpusIAOptimized() {
@@ -48,7 +49,7 @@ public class WumpusIAOptimized extends WumpusIA{
                 if (isSafe(node)) {
                     nodeResult = node;
                     return findMove(nodeResult);
-                }else if (isSmelling(node)){
+                   }else if (isSmelling(node)){
                     return findNextMoveToWumpusNode();
                 }
             }
@@ -91,6 +92,8 @@ public class WumpusIAOptimized extends WumpusIA{
                     && dangerBreeze + dangerFlap + dangerWumpus < minDanger) {
                 nodeResult = node;
                 minDanger = dangerBreeze + dangerFlap + dangerWumpus;
+            }else if (isSmelling(node)){
+                return findNextMoveToWumpusNode();
             }
         }
 
@@ -101,7 +104,7 @@ public class WumpusIAOptimized extends WumpusIA{
         final Iterator<Node> breadthFirstIterator = getCurrentNode().getBreadthFirstIterator();
 
         Node resultNode = null;
-        Integer maxDanger = 0;
+        Integer MAX_DANGER = 0;
 
         while (breadthFirstIterator.hasNext()) {
             final Node node = breadthFirstIterator.next();
@@ -110,9 +113,10 @@ public class WumpusIAOptimized extends WumpusIA{
             final Integer dangerWumpus = node.getAttribute("danger-wumpus");
 
             // Se houver algum nó não visitado com perigo igual a zero: visita ele.
-            if (nodeClass.equals("unvisited") && dangerWumpus > maxDanger) {
+            if (nodeClass.equals("unvisited") && dangerWumpus > MAX_DANGER) {
                 resultNode = node;
-                maxDanger = dangerWumpus;
+                MAX_DANGER = dangerWumpus;
+
             }
         }
 
