@@ -13,6 +13,9 @@ public class Utils {
                     "node.current {" +
                     "       fill-color: blue;" +
                     "}" +
+                    "node.unvisitedsafe {" +
+                    "       fill-color: #ccc;" +
+                    "}" +
                     "node.visited {" +
                     "       fill-color: green;" +
                     "}";

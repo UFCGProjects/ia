@@ -100,7 +100,12 @@ public class Main {
                 n.setAttribute("ui.class", "visited");
             } else {
                 n.setAttribute("ui.class", "unvisited");
+
+                if (n.getAttribute("safe") != null) {
+                    n.setAttribute("ui.class", "unvisitedsafe");
+                }
             }
+
         }
 
         mCurrentNode.setAttribute("ui.class", "current");
@@ -110,29 +115,25 @@ public class Main {
 
     private static void refreshDanger(final Graph graph, final Wumpus wumpus) {
         if (wumpus.getCurrentCell().getHazard().equals(Hazard.NONE)) {
-            graph.getNode(wumpus.getCurrentCell().getId()).setAttribute("safe", true);
-            graph.getNode(wumpus.getCurrentCell().getId()).setAttribute("danger-flap", 0);
-            graph.getNode(wumpus.getCurrentCell().getId()).setAttribute("danger-breeze", 0);
-            graph.getNode(wumpus.getCurrentCell().getId()).setAttribute("danger-wumpus", 0);
+            setNodeSafe(graph.getNode(wumpus.getCurrentCell().getId()));
         }
 
         if (wumpus.getCurrentCell().isFeelBreeze()) {
             addVizinhosDanger(graph, wumpus, "breeze", 25);
-        } else {
-            setVizinhosSafe(graph, wumpus, "danger-breeze");
         }
 
         if (wumpus.getCurrentCell().isHearFlapping()) {
             addVizinhosDanger(graph, wumpus, "flap", 25);
-        } else {
-            setVizinhosSafe(graph, wumpus, "danger-flap");
         }
 
         if (wumpus.getCurrentCell().isSmellWumpus()) {
             addVizinhosDanger(graph, wumpus, "wumpus", 25);
-        } else {
-            setVizinhosSafe(graph, wumpus, "danger-wumpus");
         }
+
+        if (!wumpus.getCurrentCell().isFeelBreeze() && !wumpus.getCurrentCell().isHearFlapping() && !wumpus.getCurrentCell().isSmellWumpus()) {
+            setVizinhosSafe(graph, wumpus);
+        }
+
     }
 
     private static void refreshNodesLabel(final Graph graph) {
@@ -213,10 +214,11 @@ public class Main {
             final Integer dangerWumpus = node.getAttribute("danger-wumpus");
 
             // Se houver algum nó não visitado com perigo igual a zero: visita ele.
-            if (nodeClass.equals("unvisited")
-                    && dangerBreeze + dangerFlap + dangerWumpus == 0) {
-                nodeResult = node;
-                return findMove(graph, nodeResult);
+            if (nodeClass.equals("unvisited") || nodeClass.equals("unvisitedsafe")) {
+                if (dangerBreeze + dangerFlap + dangerWumpus == 0) {
+                    nodeResult = node;
+                    return findMove(graph, nodeResult);
+                }
             }
         }
 
@@ -320,8 +322,6 @@ public class Main {
             prev = next;
         }
 
-        // System.out.println(next.getAttribute(node.getId()));
-
         final String attackMove = next.getAttribute(resultNode.getId());
 
         if (attackMove != null) {
@@ -371,26 +371,35 @@ public class Main {
         }
     }
 
-    private static void setVizinhosSafe(final Graph graph, final Wumpus wumpus,
-            final String dangerType) {
+    private static void setVizinhosSafe(final Graph graph, final Wumpus wumpus) {
         final Cell currentCell = wumpus.getCurrentCell();
 
         if (wumpus.hasUpCell(currentCell)) {
-            graph.getNode(wumpus.getUpCell(currentCell).getId()).setAttribute(dangerType, 0);
+            setNodeSafe(graph.getNode(wumpus.getUpCell(currentCell).getId()));
         }
 
         if (wumpus.hasDownCell(currentCell)) {
-            graph.getNode(wumpus.getDownCell(currentCell).getId()).setAttribute(dangerType, 0);
+            setNodeSafe(graph.getNode(wumpus.getDownCell(currentCell).getId()));
         }
 
         if (wumpus.hasLeftCell(currentCell)) {
-            graph.getNode(wumpus.getLeftCell(currentCell).getId()).setAttribute(dangerType, 0);
+            setNodeSafe(graph.getNode(wumpus.getLeftCell(currentCell).getId()));
         }
 
         if (wumpus.hasRightCell(currentCell)) {
-            graph.getNode(wumpus.getRightCell(currentCell).getId()).setAttribute(dangerType, 0);
+            setNodeSafe(graph.getNode(wumpus.getRightCell(currentCell).getId()));
         }
+    }
 
+    private static void setNodeSafe(final Node node) {
+        node.setAttribute("safe", true);
+        node.setAttribute("danger-flap", 0);
+        node.setAttribute("danger-breeze", 0);
+        node.setAttribute("danger-wumpus", 0);
+
+        if (node.getAttribute("ui.class").equals("unvisited")) {
+            node.setAttribute("ui.class", "unvisitedsafe");
+        }
     }
 
 }
