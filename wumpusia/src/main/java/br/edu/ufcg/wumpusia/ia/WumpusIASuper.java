@@ -1,19 +1,18 @@
 package br.edu.ufcg.wumpusia.ia;
 
 import org.graphstream.algorithm.Dijkstra;
-import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
 import org.graphstream.graph.Path;
 
 import java.util.Iterator;
 
-public class WumpusIASimple extends WumpusIA {
+public class WumpusIASuper extends WumpusIA {
 
-    public WumpusIASimple(Long seed) {
+    public WumpusIASuper(Long seed) {
         super(seed);
     }
 
-    public WumpusIASimple() {
+    public WumpusIASuper() {
         super();
     }
 
@@ -40,14 +39,14 @@ public class WumpusIASimple extends WumpusIA {
 
         while (breadthFirstIterator.hasNext()) {
             final Node node = breadthFirstIterator.next();
-            final boolean isVisited = node.getAttribute("visited");
+            final String nodeClass = node.getAttribute("ui.class");
 
             final Integer dangerBreeze = node.getAttribute("danger-breeze");
             final Integer dangerFlap = node.getAttribute("danger-flap");
             final Integer dangerWumpus = node.getAttribute("danger-wumpus");
 
             // Se houver algum nó não visitado com perigo igual a zero: visita ele.
-            if (!isVisited) {
+            if (nodeClass.equals("unvisited") || nodeClass.equals("unvisitedsafe")) {
                 if (dangerBreeze + dangerFlap + dangerWumpus == 0) {
                     nodeResult = node;
                     return findMove(nodeResult);
