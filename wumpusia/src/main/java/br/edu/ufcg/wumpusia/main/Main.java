@@ -27,6 +27,7 @@ public class Main {
         graph.addAttribute("ui.stylesheet", Utils.styleSheet);
 
         final Wumpus wumpus = new Wumpus();
+        int movesCount = 0;
 
         final Scanner sc = new Scanner(System.in);
 
@@ -55,13 +56,14 @@ public class Main {
             sc.nextLine();
 
             execMove(wumpus, nextMove);
+            movesCount++;
 
             System.out.println(wumpus.toString());
         }
-
+        System.out.println(movesCount + "");
+        System.out.println(wumpus.getWin() + "");
         sc.nextLine();
         display.close();
-
     }
 
     private static void execMove(final Wumpus wumpus, final String nextMove) {
@@ -318,7 +320,7 @@ public class Main {
             prev = next;
         }
 
-        //                System.out.println(next.getAttribute(node.getId()));
+        // System.out.println(next.getAttribute(node.getId()));
 
         final String attackMove = next.getAttribute(resultNode.getId());
 
