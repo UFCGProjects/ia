@@ -12,6 +12,7 @@ import org.graphstream.graph.Path;
 import org.graphstream.graph.implementations.MultiGraph;
 import org.graphstream.ui.swingViewer.Viewer;
 
+import java.io.IOException;
 import java.util.Iterator;
 import java.util.Scanner;
 
@@ -31,10 +32,10 @@ public abstract class WumpusIA {
         mWumpus = new Wumpus();
     }
 
-    public void run() {
+    public void run() throws IOException {
         final Scanner sc = new Scanner(System.in);
 
-        final Viewer display = getGraph().display();
+        //final Viewer display = getGraph().display();
 
         int movesCount = 0;
         while (!getWumpus().isGameOver()) {
@@ -49,7 +50,7 @@ public abstract class WumpusIA {
 
             System.out.println(nextMove);
 
-            sc.nextLine();
+            //sc.nextLine();
 
             execMove(nextMove);
             movesCount++;
@@ -58,8 +59,9 @@ public abstract class WumpusIA {
 
         System.out.println(movesCount + "");
         System.out.println(getWumpus().getWin() + "");
-        sc.nextLine();
-        display.close();
+        Utils.addResultado("simples", movesCount, getWumpus().getWin());
+        //sc.nextLine();
+        //display.close();
 
     }
 
