@@ -1,15 +1,54 @@
 ---
-IA
 ---
-
-```{r}
-summary(cars)
+IA
+=======================================================
+```{r, include=FALSE}
+resultado <- read.csv("~/ufcg/ia/ia/result.csv")
+summary(resultado)
+#separando por euristica 
+resultado_simples <- subset(resultado, resultado$euristica == 'simples')
+resultado_otimizado <- subset(resultado, resultado$euristica == 'otimizada')
 ```
 
-You can also embed plots, for example:
+Proporcao de vitorias e derrotas de cada euristica
 
 ```{r, echo=FALSE}
-plot(cars)
+prop.table(table(resultado_simples$win))
+prop.table(table(resultado_otimizado$win))
+par(mfrow=c(1,2))
+#Grafico de pizza simples
+mytable <- prop.table(table(resultado_simples$win))
+mytable <- round(mytable, 3)
+lbls <- paste(names(mytable), "\n", mytable, sep="")
+pie(mytable, labels = lbls, 
+    main="Euristica Simples")
+
+#Grafico de pizza otimizado
+mytable <- prop.table(table(resultado_otimizado$win))
+mytable <- round(mytable, 3)
+lbls <- paste(names(mytable), "\n", mytable, sep="")
+pie(mytable, labels = lbls, 
+    main="Euristica Otimizada")
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+```{r, include=FALSE}
+#Separando entre vitoria e derroa
+resultado_simples_win <- subset(resultado_simples, resultado_simples$win == 'true')
+resultado_simples_lose <- subset(resultado_simples, resultado_simples$win == 'false')
+resultado_otimizado_win <- subset(resultado_otimizado, resultado_otimizado$win == 'true')
+resultado_otimizado_lose <- subset(resultado_otimizado, resultado_otimizado$win == 'false')
+```
+
+```{r, echo=FALSE}
+summary(resultado_simples_win)
+hist(resultado_simples_win$moves, main = "Simples vitorias", xlab = "moves")
+#Analise de derrota do Simples
+summary(resultado_simples_lose)
+hist(resultado_simples_lose$moves, main = "Simples derrotas", xlab = "moves")
+#Analise de vitorias do Otimizado
+summary(resultado_otimizado_win)
+hist(resultado_otimizado_win$moves, main = "Otimizado vitorias", xlab = "moves")
+#Analise de derrora do Simples
+summary(resultado_otimizado_lose)
+hist(resultado_otimizado_lose$moves, main = "Otimizado derrotas", xlab = "moves")
+```
