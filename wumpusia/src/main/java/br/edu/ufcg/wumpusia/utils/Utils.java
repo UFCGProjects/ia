@@ -26,7 +26,7 @@ public class Utils {
                     "       fill-color: green;" +
                     "}";
 
-    private static final String OUT_PUT_FILE = "C:\\Users\\Zk\\Documents\\ufcg\\ia\\ia\\result.csv";
+    private static final String OUT_PUT_FILE = "result.csv";
 
     public static ArrayList<String> readCSV(final String path) {
         final BufferedReader reader;
@@ -36,7 +36,7 @@ public class Utils {
         try {
             reader = new BufferedReader(new FileReader(path));
 
-            String line = null;
+            String line;
 
             while ((line = reader.readLine()) != null) {
                 data.add(line);
@@ -55,22 +55,21 @@ public class Utils {
     }
 
     public static void addResultado(String euristica, int qtdeMoves, boolean win) {
-        Result resultTemp = new Result(euristica,qtdeMoves,win);
+        Result resultTemp = new Result(euristica, qtdeMoves, win);
         results.add(resultTemp);
     }
 
     public static void saveWords() throws IOException {
         PrintWriter writerAnalysis;
 
-        writerAnalysis = new PrintWriter(new BufferedWriter(new FileWriter(
-                OUT_PUT_FILE, false)));
+        writerAnalysis = new PrintWriter(new BufferedWriter(new FileWriter(OUT_PUT_FILE, false)));
 
-        writerAnalysis
-                .println("euristica,moves,win");
+        writerAnalysis.println("euristica,moves,win");
 
         for (Result result : results) {
             writerAnalysis.println(result.toString());
         }
+
         writerAnalysis.flush();
         writerAnalysis.close();
     }

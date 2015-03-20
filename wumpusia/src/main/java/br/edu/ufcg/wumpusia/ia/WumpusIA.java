@@ -48,13 +48,20 @@ public abstract class WumpusIA {
 
             String nextMove = heuristicaToFindMove();
 
-            System.out.println(nextMove);
+            // DEBUG:
+            //     Imprimi o proximo movimento da IA
+            //System.out.println(nextMove);
 
+            // DEBUG:
+            //     Segura os movimentos da IA
             //sc.nextLine();
 
             execMove(nextMove);
             movesCount++;
-            System.out.println(getWumpus().toString());
+
+            // DEBUG:
+            //     Mostra o tabuleiro do WUMPUS no console.
+            //System.out.println(getWumpus().toString());
         }
 
         System.out.println(movesCount + "");

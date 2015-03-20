@@ -14,6 +14,7 @@ public class Main {
             WumpusIASimple gameIA = new WumpusIASimple();
             gameIA.run();
         }
+
         Utils.saveWords();
     }
 }
