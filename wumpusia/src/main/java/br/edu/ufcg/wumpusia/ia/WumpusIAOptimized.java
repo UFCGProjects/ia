@@ -10,6 +10,14 @@ import java.util.Iterator;
  * Created by rafaelrf.
  */
 public class WumpusIAOptimized extends WumpusIA{
+    
+     public WumpusIAOptimized (Long seed) {
+         super(seed);
+     }
+
+    public WumpusIAOptimized() {
+        super();
+    }
 
     @Override
     String heuristicaToFindMove() {
