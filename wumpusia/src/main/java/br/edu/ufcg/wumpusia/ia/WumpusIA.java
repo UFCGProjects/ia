@@ -40,7 +40,7 @@ public abstract class WumpusIA {
         mWumpus = new Wumpus(seed);
     }
 
-    public void run(String euristica) throws IOException {
+    public void run() throws IOException {
         final Scanner sc = new Scanner(System.in);
 
         // Mostra o gráfico
@@ -79,8 +79,11 @@ public abstract class WumpusIA {
             }
         }
 
-        System.out.println(movesCount + "");
-        System.out.println(getWumpus().getWin() + "");
+        if (DEBUG_MODE) {
+            System.out.println(movesCount + "");
+            System.out.println(getWumpus().getWin() + "");
+        }
+
         Utils.addResultado(this.getClass().getSimpleName().toLowerCase(), movesCount, getWumpus().getWin(), mSeed);
 
         // Espera pelo sinal para terminar
