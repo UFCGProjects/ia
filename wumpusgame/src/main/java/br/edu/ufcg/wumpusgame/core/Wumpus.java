@@ -207,7 +207,7 @@ public class Wumpus {
         checkBats();
     }
 
-    public void checkBats() {
+    private void checkBats() {
         if (mCurrentCell.getHazard().equals(Hazard.COLONY_BATS)) {
             System.out.println("Bats carried you away!\n");
             mCurrentCell = mMatrix[Utils.randInt(0, HEIGHT_SIZE - 1)][Utils.randInt(0, WIDTH_SIZE - 1)];
@@ -293,7 +293,7 @@ public class Wumpus {
         attack(getRightCell(getCurrentCell()));
     }
 
-    public void attack(final Cell cell) {
+    private void attack(final Cell cell) {
         mArrow--;
 
         if (cell != null && cell.getHazard().equals(Hazard.WUMPUS)) {
