@@ -71,7 +71,7 @@ public abstract class WumpusIA {
         System.out.println(movesCount + "");
         System.out.println(getWumpus().getWin() + "");
         Utils.addResultado("simples", movesCount, getWumpus().getWin());
-        sc.nextLine();
+//        sc.nextLine();
 //        display.close();
 
     }
