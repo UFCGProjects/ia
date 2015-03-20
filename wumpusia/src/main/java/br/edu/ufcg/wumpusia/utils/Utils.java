@@ -55,8 +55,8 @@ public class Utils {
 
     }
 
-    public static void addResultado(String euristica, int qtdeMoves, boolean win) {
-        Result resultTemp = new Result(euristica, qtdeMoves, win);
+    public static void addResultado(String euristica, int qtdeMoves, boolean win, Long seed) {
+        Result resultTemp = new Result(euristica, qtdeMoves, win, seed);
         results.add(resultTemp);
     }
 
@@ -65,7 +65,7 @@ public class Utils {
 
         writerAnalysis = new PrintWriter(new BufferedWriter(new FileWriter(OUT_PUT_FILE, false)));
 
-        writerAnalysis.println("euristica,moves,win");
+        writerAnalysis.println("euristica,moves,win,seed");
 
         for (Result result : results) {
             writerAnalysis.println(result.toString());
