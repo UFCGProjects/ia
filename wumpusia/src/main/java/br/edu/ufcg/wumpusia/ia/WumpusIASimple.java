@@ -40,14 +40,14 @@ public class WumpusIASimple extends WumpusIA {
 
         while (breadthFirstIterator.hasNext()) {
             final Node node = breadthFirstIterator.next();
-            final String nodeClass = node.getAttribute("ui.class");
+            final boolean isVisited = node.getAttribute("visited");
 
             final Integer dangerBreeze = node.getAttribute("danger-breeze");
             final Integer dangerFlap = node.getAttribute("danger-flap");
             final Integer dangerWumpus = node.getAttribute("danger-wumpus");
 
             // Se houver algum nó não visitado com perigo igual a zero: visita ele.
-            if (nodeClass.equals("unvisited") || nodeClass.equals("unvisitedsafe")) {
+            if (!isVisited) {
                 if (dangerBreeze + dangerFlap + dangerWumpus == 0) {
                     nodeResult = node;
                     return findMove(nodeResult);

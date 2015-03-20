@@ -18,6 +18,9 @@ import java.util.Scanner;
 
 public abstract class WumpusIA {
 
+    private static boolean DEBUG_MODE = false;
+    private final Long mSeed;
+
     private Node mCurrentNode;
     private Graph mGraph;
     private Wumpus mWumpus;
@@ -27,6 +30,7 @@ public abstract class WumpusIA {
     }
 
     public WumpusIA(Long seed) {
+        mSeed = seed;
         mGraph = new MultiGraph("Wumpus IA");
 
         getGraph().setAutoCreate(true);
@@ -39,7 +43,11 @@ public abstract class WumpusIA {
     public void run(String euristica) throws IOException {
         final Scanner sc = new Scanner(System.in);
 
-//        final Viewer display = getGraph().display();
+        // Mostra o gráfico
+        Viewer display = null;
+        if (DEBUG_MODE) {
+            display = getGraph().display();
+        }
 
         int movesCount = 0;
         while (!getWumpus().isGameOver()) {
@@ -52,27 +60,36 @@ public abstract class WumpusIA {
 
             String nextMove = heuristicaToFindMove();
 
-            // DEBUG:
-            //     Imprimi o proximo movimento da IA
-//            System.out.println(nextMove);
+            // Imprimi o proximo movimento da IA
+            if (DEBUG_MODE) {
+                System.out.println(nextMove);
+            }
 
-            // DEBUG:
-            //     Segura os movimentos da IA
-//            sc.nextLine();
+            // Segura os movimentos da IA
+            if (DEBUG_MODE) {
+                sc.nextLine();
+            }
 
             execMove(nextMove);
             movesCount++;
 
-            // DEBUG:
-            //     Mostra o tabuleiro do WUMPUS no console.
-            //System.out.println(getWumpus().toString());
+            // Mostra o tabuleiro do WUMPUS no console.
+            if (DEBUG_MODE) {
+                System.out.println(getWumpus().toString());
+            }
         }
 
         System.out.println(movesCount + "");
         System.out.println(getWumpus().getWin() + "");
-        Utils.addResultado("simples", movesCount, getWumpus().getWin());
-//        sc.nextLine();
-//        display.close();
+        Utils.addResultado(this.getClass().getSimpleName().toLowerCase(), movesCount, getWumpus().getWin(), mSeed);
+
+        // Espera pelo sinal para terminar
+        if (DEBUG_MODE) {
+            sc.nextLine();
+            if (display != null) {
+                display.close();
+            }
+        }
 
     }
 
