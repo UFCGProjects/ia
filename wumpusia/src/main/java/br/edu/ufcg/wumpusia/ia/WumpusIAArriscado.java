@@ -1,22 +1,24 @@
 package br.edu.ufcg.wumpusia.ia;
 
 import org.graphstream.algorithm.Dijkstra;
-import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
 import org.graphstream.graph.Path;
 
 import java.util.Iterator;
 
-public class WumpusIASimple extends WumpusIA {
+/**
+ * Created by rafaelrf.
+ */
+public class WumpusIAArriscado extends WumpusIA{
+    
+     public WumpusIAArriscado(Long seed) {
+         super(seed);
 
-    public WumpusIASimple(Long seed) {
-        super(seed);
-    }
+     }
 
-    public WumpusIASimple() {
+    public WumpusIAArriscado() {
         super();
     }
-
 
     @Override
     String heuristicaToFindMove() {
@@ -40,22 +42,35 @@ public class WumpusIASimple extends WumpusIA {
 
         while (breadthFirstIterator.hasNext()) {
             final Node node = breadthFirstIterator.next();
-            final boolean isVisited = node.getAttribute("visited");
-
-            final Integer dangerBreeze = node.getAttribute("danger-breeze");
-            final Integer dangerFlap = node.getAttribute("danger-flap");
-            final Integer dangerWumpus = node.getAttribute("danger-wumpus");
+            final String nodeClass = node.getAttribute("ui.class");
 
             // Se houver algum nó não visitado com perigo igual a zero: visita ele.
-            if (!isVisited) {
-                if (dangerBreeze + dangerFlap + dangerWumpus == 0) {
+            if (nodeClass.equals("unvisited") || nodeClass.equals("unvisitedsafe")) {
+                if (isSafe(node)) {
                     nodeResult = node;
                     return findMove(nodeResult);
+                   }else if (isSmelling(node)){
+                    return findNextMoveToWumpusNode();
                 }
             }
         }
 
         return null;
+
+    }
+
+    private boolean isSmelling(Node node) {
+        Integer dangerWumpus = node.getAttribute("danger-wumpus");
+        return dangerWumpus > 0 ;
+    }
+
+
+    private boolean isSafe(Node nextNode){
+        Integer dangerBreeze = nextNode.getAttribute("danger-breeze");
+        Integer dangerFlap = nextNode.getAttribute("danger-flap");
+        Integer dangerWumpus = nextNode.getAttribute("danger-wumpus");
+
+        return dangerBreeze + dangerFlap + dangerWumpus == 0;
     }
 
     protected String findNextMoveToLessDangerousNode() {
@@ -77,6 +92,8 @@ public class WumpusIASimple extends WumpusIA {
                     && dangerBreeze + dangerFlap + dangerWumpus < minDanger) {
                 nodeResult = node;
                 minDanger = dangerBreeze + dangerFlap + dangerWumpus;
+            }else if (isSmelling(node)){
+                return findNextMoveToWumpusNode();
             }
         }
 
@@ -87,7 +104,7 @@ public class WumpusIASimple extends WumpusIA {
         final Iterator<Node> breadthFirstIterator = getCurrentNode().getBreadthFirstIterator();
 
         Node resultNode = null;
-        Integer maxDanger = 0;
+        Integer MAX_DANGER = 0;
 
         while (breadthFirstIterator.hasNext()) {
             final Node node = breadthFirstIterator.next();
@@ -96,9 +113,10 @@ public class WumpusIASimple extends WumpusIA {
             final Integer dangerWumpus = node.getAttribute("danger-wumpus");
 
             // Se houver algum nó não visitado com perigo igual a zero: visita ele.
-            if (nodeClass.equals("unvisited") && dangerWumpus > maxDanger) {
+            if (nodeClass.equals("unvisited") && dangerWumpus > MAX_DANGER) {
                 resultNode = node;
-                maxDanger = dangerWumpus;
+                MAX_DANGER = dangerWumpus;
+
             }
         }
 
@@ -144,5 +162,6 @@ public class WumpusIASimple extends WumpusIA {
 
         return move;
     }
+
 
 }
