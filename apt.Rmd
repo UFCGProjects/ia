@@ -6,8 +6,8 @@ IA
 resultado <- read.csv("~/ufcg/ia/ia/result.csv")
 summary(resultado)
 #separando por euristica 
-resultado_simples <- subset(resultado, resultado$euristica == 'simples')
-resultado_otimizado <- subset(resultado, resultado$euristica == 'otimizada')
+resultado_simples <- subset(resultado, resultado$euristica == 'wumpusiasimple')
+resultado_otimizado <- subset(resultado, resultado$euristica == 'wumpusiaoptimized')
 ```
 
 Proporcao de vitorias e derrotas de cada euristica
