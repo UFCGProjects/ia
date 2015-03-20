@@ -1,12 +1,12 @@
 
 package br.edu.ufcg.wumpusia.main;
 
-import br.edu.ufcg.wumpusia.ia.WumpusIASimple;
+import br.edu.ufcg.wumpusia.ia.WumpusIAOptimized;
 
 public class Main {
 
     public static void main(final String args[]) {
-        WumpusIASimple gameIA = new WumpusIASimple();
+        WumpusIAOptimized gameIA = new WumpusIAOptimized();
 
         gameIA.run();
     }
