@@ -1,54 +1,42 @@
-simples <- read.csv("~/ufcg/ia/ia/result.csv")
-summary(simples)
-prop.table(table(simples$win))
-mytable <- prop.table(table(simples$win))
+resultado <- read.csv("~/ufcg/ia/ia/result.csv")
+summary(resultado)
+#separando por euristica 
+resultado_simples <- subset(resultado, resultado$euristica == 'simples')
+resultado_otimizado <- subset(resultado, resultado$euristica == 'otimizada')
+
+#Proporcao de viteorias e derrotas de cada euristica
+prop.table(table(resultado_simples$win))
+prop.table(table(resultado_otimizado$win))
+
+#Grafico de pizza simples
+mytable <- prop.table(table(resultado_simples$win))
 mytable <- round(mytable, 3)
 lbls <- paste(names(mytable), "\n", mytable, sep="")
 pie(mytable, labels = lbls, 
     main="Euristica Simples")
 
-simpleswin <- subset(simples, simples$win == 'true')
-simpleslose <- subset(simples, simples$win == 'false')
-summary(simpleswin)
-summary(simpleslose)
-hist(simpleslose$moves)
-hist(simpleswin$moves)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-result$movescat <- 'factor'
-result$movescat[result$moves <= 10] <- ' 0 - 10'
-result$movescat[result$moves > 10 & result$moves <= 23] <- '11 - 23'
-result$movescat[result$moves > 23 & result$moves <= 29] <- '24 - 29'
-result$movescat[result$moves > 29] <- '30 - 43'
-result$movescat <- as.factor(result$movescat)
-summary(result)
-
-sort(tapply(result$moves, result$win, mean), decreasing= T)
-
-
-# Stacked bar graph -- this is probably not what you want
-ggplot(data=result, aes(x=win, y=moves, fill=win)) +
-  geom_bar(stat="identity") +
-  guides(fill=FALSE)
-
-mytable <- prop.table(table(dados_treino_cc_em_tratado$tranccat, dados_treino_cc_em_tratado$codevasao), 1)
+#Grafico de pizza otimizado
+mytable <- prop.table(table(resultado_otimizado$win))
 mytable <- round(mytable, 3)
-print(mytable)
-qplot(factor(tranccat), data=dados_treino_cc_em_tratado, geom="bar", fill=codevasao, ylab="Quantidade de alunos", xlab="Tracamentos", main = "Trancamentos e Evasão CC e EM")
+lbls <- paste(names(mytable), "\n", mytable, sep="")
+pie(mytable, labels = lbls, 
+    main="Euristica Otimizada")
 
+#Separando entre vitoria e derroa
+resultado_simples_win <- subset(resultado_simples, resultado_simples$win == 'true')
+resultado_simples_lose <- subset(resultado_simples, resultado_simples$win == 'false')
+resultado_otimizado_win <- subset(resultado_otimizado, resultado_otimizado$win == 'true')
+resultado_otimizado_lose <- subset(resultado_otimizado, resultado_otimizado$win == 'false')
 
-prop.table(table(result$movecat))
+#Analise de vitorias do Simples
+summary(resultado_simples_win)
+hist(resultado_simples_win$moves)
+#Analise de derrota do Simples
+summary(resultado_simples_lose)
+hist(resultado_simples_lose$moves)
+#Analise de vitorias do Otimizado
+summary(resultado_otimizado_win)
+hist(resultado_otimizado_win$moves)
+#Analise de derrora do Simples
+summary(resultado_otimizado_lose)
+hist(resultado_otimizado_lose$moves)
