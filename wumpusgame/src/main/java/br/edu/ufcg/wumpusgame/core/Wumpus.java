@@ -11,12 +11,13 @@ public class Wumpus {
     private final int HEIGHT_SIZE = 5;
     private final int WIDTH_SIZE = 5;
     private int mArrow = 1;
+    private boolean mWin = false;
 
     Cell[][] mMatrix;
     Cell mCurrentCell;
 
     public Wumpus() {
-
+        mWin = false;
         mMatrix = new Cell[HEIGHT_SIZE][WIDTH_SIZE];
 
         for (int i = 0; i < mMatrix.length; i++) {
@@ -290,11 +291,16 @@ public class Wumpus {
         mArrow--;
 
         if (cell != null && cell.getHazard().equals(Hazard.WUMPUS)) {
+            mWin = true;
             System.out.println("You killed the wumpus!\nYou WIN!\n");
         } else if (!hasArrow()) {
+            mWin = false;
             System.out.println("You dont have more arrows!\nGAME OVER!");
             System.out.println("You missed!");
         }
+    }
 
+    public boolean getWin() {
+        return mWin;
     }
 }
