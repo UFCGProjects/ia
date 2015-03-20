@@ -16,6 +16,7 @@ public class Main {
         for (int i = 0; i < 1000; i++) {
             System.out.println("Creating Wumpus with seed: " + seeds[i]);
 
+
             (new WumpusIASimple(seeds[i])).run();
             (new WumpusIAOptimized(seeds[i])).run();
             (new WumpusIASuper(seeds[i])).run();

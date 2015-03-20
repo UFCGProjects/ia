@@ -83,10 +83,14 @@ public abstract class WumpusIA {
             if (DEBUG_MODE) {
                 System.out.println(getWumpus().toString());
             }
+
         }
 
-        System.out.println(movesCount + "");
-        System.out.println(getWumpus().getWin() + "");
+        if (DEBUG_MODE) {
+            System.out.println(movesCount + "");
+            System.out.println(getWumpus().getWin() + "");
+        }
+
         Utils.addResultado(this.getClass().getSimpleName().toLowerCase(), movesCount, getWumpus().getWin(), mSeed);
 
         // Espera pelo sinal para terminar
