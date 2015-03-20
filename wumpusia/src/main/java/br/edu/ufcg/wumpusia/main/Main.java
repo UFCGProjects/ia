@@ -10,13 +10,15 @@ import java.io.IOException;
 public class Main {
 
     public static void main(final String args[]) throws IOException {
-        Long[] seeds = Utils.loadSeeds();
+//        Long[] seeds = Utils.loadSeeds();
         
-        for (int i = 0; i < 1000; i++) {
-            System.out.println("Creating Wumpus with seed: " + seeds[i]);
+        for (int i = 0; i < 1; i++) {
+            long seed = System.currentTimeMillis();
 
-            (new WumpusIASafeFirst(seeds[i])).run();
-            (new WumpusIAArriscado(seeds[i])).run();
+            System.out.println("Creating Wumpus with seed: " + seed);
+
+            (new WumpusIASafeFirst(seed)).run();
+            (new WumpusIAArriscado(seed)).run();
         }
 
         Utils.saveWords();

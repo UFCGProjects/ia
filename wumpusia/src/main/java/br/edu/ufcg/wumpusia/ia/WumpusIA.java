@@ -18,7 +18,7 @@ import java.util.Scanner;
 
 public abstract class WumpusIA {
 
-    private static boolean DEBUG_MODE = false;
+    private static boolean DEBUG_MODE = true;
     private final Long mSeed;
 
     private Node mCurrentNode;
@@ -57,6 +57,10 @@ public abstract class WumpusIA {
 
         int movesCount = 0;
         while (!getWumpus().isGameOver()) {
+            // Mostra o tabuleiro do WUMPUS no console.
+            if (DEBUG_MODE) {
+                System.out.println(getWumpus().toString());
+            }
 
             if (!refreshNodes()) {
                 refreshDanger();
@@ -79,10 +83,7 @@ public abstract class WumpusIA {
             execMove(nextMove);
             movesCount++;
 
-            // Mostra o tabuleiro do WUMPUS no console.
-            if (DEBUG_MODE) {
-                System.out.println(getWumpus().toString());
-            }
+
 
         }
 
@@ -96,9 +97,9 @@ public abstract class WumpusIA {
         // Espera pelo sinal para terminar
         if (DEBUG_MODE) {
             sc.nextLine();
-            if (display != null) {
-                display.close();
-            }
+//            if (display != null) {
+//                display.close();
+//            }
         }
 
     }
