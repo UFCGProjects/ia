@@ -83,8 +83,6 @@ public abstract class WumpusIA {
             execMove(nextMove);
             movesCount++;
 
-
-
         }
 
         if (DEBUG_MODE) {
