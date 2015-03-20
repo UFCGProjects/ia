@@ -27,6 +27,7 @@ public class Utils {
                     "}";
 
     private static final String OUT_PUT_FILE = "result.csv";
+    private static final String PATH_SEEDS = "seeds.txt";
 
     public static ArrayList<String> readCSV(final String path) {
         final BufferedReader reader;
@@ -72,5 +73,33 @@ public class Utils {
 
         writerAnalysis.flush();
         writerAnalysis.close();
+    }
+
+
+    public static Long[] loadSeeds() {
+        Long[] seeds = new Long[10000];
+
+        final BufferedReader reader;
+
+        int index = 0;
+
+        try {
+            reader = new BufferedReader(new FileReader(PATH_SEEDS));
+
+            String line;
+
+            while ((line = reader.readLine()) != null) {
+                seeds[index++] = Long.parseLong(line);
+            }
+
+            reader.close();
+
+        } catch (final FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (final IOException e) {
+            e.printStackTrace();
+        }
+
+        return seeds;
     }
 }

@@ -9,9 +9,11 @@ import java.io.IOException;
 public class Main {
 
     public static void main(final String args[]) throws IOException {
+        Long[] seeds = Utils.loadSeeds();
 
         for (int i = 0; i < 1000; i++) {
-            WumpusIASimple gameIA = new WumpusIASimple();
+            System.out.println("Creating Wumpus with seed: " + seeds[i]);
+            WumpusIASimple gameIA = new WumpusIASimple(seeds[i]);
             gameIA.run();
         }
 
