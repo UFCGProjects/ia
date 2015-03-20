@@ -70,8 +70,8 @@ public abstract class WumpusIA {
 
         System.out.println(movesCount + "");
         System.out.println(getWumpus().getWin() + "");
-        Utils.addResultado(euristica, movesCount, getWumpus().getWin());
-        //sc.nextLine();
+        Utils.addResultado("simples", movesCount, getWumpus().getWin());
+//        sc.nextLine();
 //        display.close();
 
     }
