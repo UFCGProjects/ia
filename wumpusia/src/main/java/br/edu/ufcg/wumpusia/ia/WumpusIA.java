@@ -36,7 +36,7 @@ public abstract class WumpusIA {
         mWumpus = new Wumpus(seed);
     }
 
-    public void run() throws IOException {
+    public void run(String euristica) throws IOException {
         final Scanner sc = new Scanner(System.in);
 
 //        final Viewer display = getGraph().display();
@@ -70,8 +70,8 @@ public abstract class WumpusIA {
 
         System.out.println(movesCount + "");
         System.out.println(getWumpus().getWin() + "");
-        Utils.addResultado("simples", movesCount, getWumpus().getWin());
-        sc.nextLine();
+        Utils.addResultado(euristica, movesCount, getWumpus().getWin());
+        //sc.nextLine();
 //        display.close();
 
     }
